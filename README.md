@@ -13,7 +13,7 @@
  nltk.download('punkt')   
 ```
 
-# 데이터 불러오기 및 
+# 데이터 불러오기 및 전처리
 
 ```
  import pandas as pd   
