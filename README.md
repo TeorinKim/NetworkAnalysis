@@ -12,6 +12,9 @@
  !pip install apriori apyori   
  nltk.download('punkt')   
 ```
+
+# 데이터 불러오기 및 
+
 ```
  import pandas as pd   
  import numpy as np   
@@ -68,6 +71,9 @@ open2=subset_Sonata.iloc[:,4]
 lines=np.array(open2.dropna())   
 print(lines)   
 ```
+
+
+# 형태소 분석기 설정 - Twitter 사용
 
 형태소 분석을 위한 패키지들을 불러옴   
 Twitter를 쓴 이유는 사용자 사전을 추가하기가 편해서임   
