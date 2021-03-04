@@ -61,7 +61,7 @@ print(subset_Sonata)
 모델별 데이터에서 텍스트 자료가 있는 열만 뽑아옴
 
 ```
-open2=subset_Sonata.iloc[:,4]   
+open2=subset_Avante.iloc[:,4]   
 ```
 
 데이터가 dataframe 형태일 경우 아래 apriori 패키지에서 에러가 발생하기 때문에 array 형태로 변경해 줌   
