@@ -2,16 +2,25 @@
 
  텍스트 분석을 위한 여러 패키지들임. 아래 git에서 가져온 kospacing은 띄어쓰기를 해주는 패키지인데 안깔림. 왜인지는 잘 모르겠음
  Komoran은 한글 형태소 분석기인데 형태소 분석기마다 결과가 약간씩 다름. 이 분석에서는 설치 안해도 됨
+ Py-Hanspell은 네이버 한글 맞춤법 검사기
 
 ```
- pip install wordcloud   
- pip install customized_konlpy   
- !pip install git+https://github.com/haven-jeon/PyKoSpacing.git   
+ !pip install wordcloud   
+ !pip install customized_konlpy   
+ # !pip install git+https://github.com/haven-jeon/PyKoSpacing.git   
+ !pip install git+https://github.com/ssut/py-hanspell.git
  !pip install -U PyKomoran   
  !pip3 show nltk   
- !pip install apriori apyori   
- nltk.download('punkt')   
+ !pip install apriori apyori    
 ```
+
+아래 다운로드를 해줘야 뒤에서 apyori 구동시 문제 안생김
+
+```
+import nltk
+nltk.download('punkt')  
+```
+
 
 # 데이터 불러오기 및 전처리
 
