@@ -383,40 +383,42 @@ df
 
 네트워크를 그리기 위한 패키지 불러옴
 
+```
 import re
 import networkx as nx
 import matplotlib.pyplot as plt
-
+```
 
 위의 연관성 분석 후 남은 단어들을 각 노드로 정의해주고, networkx에서 사용할 수 있는 형태로 만들어 줌
-
+```
 G=nx.Graph()
 ar=(df['items']); G.add_edges_from(ar)
-
+```
 
 각 단어들의 pagerank를 사용하여 각 노드의 크기를 결정해줌. 
 
-
+```
 pr=nx.pagerank(G)
 nsize=np.array([v for v in pr.values()])
 nsize=2000*(nsize-min(nsize))/(max(nsize)-min(nsize))
-
+```
 
 단어의 연관성(support)을 사용하여 edge의 굵기를 결정해줌. 0.001을 더해준 이유는 가장 얇은 선의 경우 보이지 않는 수준이라 전체적으로 굵게 만들어 준 것임
 
-
+```
 es = (df['support'])
 width = 10*((es-min(es))+0.001)/(max(es)-min(es))
-
+```
 
 한글 폰트가 안 불러지는 경우가 많아서 아래와 같은 형태로 font_name이라는 변수에 원하는 폰트의 위치로 정의해줌
 
-
+```
 import matplotlib.font_manager as fm
 from matplotlib import rc
 
 font_name = fm.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
 rc('font', family=font_name)
+```
 
 그림의 레이아웃을 설정해줌
 일반적으로 kamada_kawai가 가장 나은 모양을 보여줌.
@@ -426,13 +428,13 @@ rc('font', family=font_name)
 figsize=(40,30) 이 안의 숫자를 수정해줌 20, 15 정도면 충분하게 잘 보이지만 노드들이 너무 뭉쳐 있어서 그림을 크게 그리기 위해 40, 30으로 늘려준 것임
 
 
-
+```
 #pos = nx.kamada_kawai_layout(G)
 pos = nx.spring_layout(G)
 #pos = nx.circular_layout(G)
 
 plt.figure(figsize=(40,30)); plt.axis('off')
-nx.draw_networkx(G,font_family=font_name, 
+nx.`draw_networkx(G,font_family=font_name, 
                  font_size=18,
                  pos=pos, 
                  width=width, 
@@ -443,3 +445,4 @@ nx.draw_networkx(G,font_family=font_name,
                  min_target_margin=20
                 )
                 
+```
