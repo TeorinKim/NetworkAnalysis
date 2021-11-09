@@ -3,6 +3,7 @@
 텍스트 분석을 위한 여러 패키지들임. 아래 git에서 가져온 kospacing은 띄어쓰기를 해주는 패키지인데 안깔림. 왜인지는 잘 모르겠음
 Komoran은 한글 형태소 분석기인데 형태소 분석기마다 결과가 약간씩 다름. 이 분석에서는 설치 안해도 됨
 
+```
 pip install wordcloud
 pip install customized_konlpy
 !pip install git+https://github.com/haven-jeon/PyKoSpacing.git
@@ -10,21 +11,21 @@ pip install customized_konlpy
 !pip3 show nltk
 !pip install apriori apyori
 nltk.download('punkt')
+```
 
-
-
+```
 import pandas as pd
 import numpy as np
-
+```
 
 파일 불러옴. 엑셀에서 csv를 저장하였을 경우 인코딩 문제로 불러지지 않는 경우가 있음. 이 경우 encoding='cp949' 를 넣어주면 잘 불러와짐
-
+```
 open1=pd.read_csv('C:/Users/CI/hyundai/youtube_raw.csv', sep=',', encoding='cp949')
-
+```
 
 댓글들을 모델별로 따로 분석해야 했기 때문에 미리 데이터를 모델별로 정의해 줌
 
-
+```
 deep_raw = open1['type'] == 1
 reply_raw = open1['type'] == 2
 
@@ -52,22 +53,22 @@ subset_Genesis = open1[reply_raw & reply_Genesis]
 
 
 print(subset_Sonata)
-
+```
 모델별 데이터에서 텍스트 자료가 있는 열만 뽑아옴
-
+```
 open2=subset_Sonata.iloc[:,4]
-
+```
 
 데이터가 dataframe 형태일 경우 아래 apriori 패키지에서 에러가 발생하기 때문에 array 형태로 변경해 줌
 결측치 제거함
-
+```
 lines=np.array(open2.dropna())
 print(lines)
-
+```
 형태소 분석을 위한 패키지들을 불러옴
 Twitter를 쓴 이유는 사용자 사전을 추가하기가 편해서임
 (사실 다른 형태소 분석기들의 방법들도 찾긴 했지만 적용하는데 실패했음 ㅠㅠ)
-
+```
 from ckonlpy.tag import Twitter
 from ckonlpy.utils import load_wordset
 from ckonlpy.utils import load_replace_wordpair
@@ -75,12 +76,13 @@ from ckonlpy.utils import load_ngram
 from ckonlpy.tag import Postprocessor
 
 twitter=Twitter()
-
+```
 사용자 사전을 파일 형태로 업데이트 하는 방법에 대해 더 알아봐야 함
 다양한 오타가 있을 수 있기 때문에 그랜져, 그랜저, 그렌저 등과 같이 동일 의미의 단어를 모두 잡아 주고 뒤의 replace 파일에서 한 단어로 모두 바꾸어줌
 모든 알파벳을 대문자 혹은 소문자로 변경하는 작업을 먼저 해주면 더 간단히 작업할 수 있음. 
 소문자가 다른 의미를 가질 경우가 아니면 먼저 해주는 것이 좋음
 
+```
 twitter.add_dictionary('승차감', 'Noun')
 twitter.add_dictionary('가성비', 'Noun')
 twitter.add_dictionary('g80', 'Noun')
@@ -281,6 +283,7 @@ twitter.add_dictionary('독3', 'Noun')
 twitter.add_dictionary('독3사', 'Noun')
 twitter.add_dictionary('독삼사', 'Noun')
 twitter.add_dictionary('독삼', 'Noun')
+```
 
 stopwords: 빼야 할 단어
 replacewords: 바꿀 단어
@@ -288,22 +291,22 @@ replacewords: 바꿀 단어
 ngrams: 함께 나왔을 때 합칠 단어
   준+ spacebar + 중형+ tab +  준중형 -> 준 중형이 같이 나오면 '준 - 중형' 으로 표시됨. 그런데 안먹히는 경우 있음. 원인은 잘 모르겠음
 
-
+```
 stopwords = load_wordset('C:/Users/CI/hyundai/stopwords.txt')
 replace = load_replace_wordpair('C:/Users/CI/hyundai/replacewords.txt')
 ngrams = load_ngram('C:/Users/CI/hyundai/ngrams.txt')
-
+```
 
 Postprocessor 패키지를 사용하여 위에서 설정한 파일 적용
 password를 설정할 경우 여기에 속한 단어만 뽑혀나옴. 주의!!
 여기에서 정의한 단어 세트를 사용하여 기존 twitter 형태소 분석기를 업데이트 하는 것이라고 생각하면 됨
 
-
+```
 pp1 = Postprocessor(twitter, stopwords=stopwords,
                     # passwords = passwords,
                     ngrams = ngrams,
                     replace = replace)
-
+```
 
 텍스트 자료를 위 형태소 분석기를 사용하여 토큰화함
 apriori 패키지를 사용할 수 있는 데이터 형태로 바꾸어야 함
@@ -314,16 +317,18 @@ apriori 패키지를 사용할 수 있는 데이터 형태로 바꾸어야 함
 
 for 문을 사용하여 각 라인의 댓글들을 토큰화시키고 이를 리스트로 만들어 또다른 리스트에 append 해줌
 
+```
 word_tokens=[]
 
 for i in range(len(lines)):
     word_tokens.append(pp1.pos(lines[i]))
-
+```
 
 twitter, Postprocessor 패키지를 사용하여 토큰화를 하면 [('자동차', 'Noun'), ('좋다','Verb')] 와 같이 품사가 같이 붙어서 데이터가 나옴
 이 중 필요한 명사, 동사, 형용사만 뽑아서 분석을 실시하였음. 
 품사를 없애고 원 데이터만 남도록 데이터를 만듦
 
+```
 word_pre = []
 
 for item in word_tokens:
@@ -335,6 +340,7 @@ for item in word_tokens:
     word_pre.append(temp)    
 
 print(word_pre)
+```
 
 [['센슈어스', '옆 - 라인', '최고다'],
  ['마력', '그랜저', '모델', '있었습니다'],
@@ -353,25 +359,26 @@ apriori 패키지를 사용하여 연관성 분석을 실시함
 연관성이 높은 단어 순으로 정렬해서 그 연관성을 edge의 굵기로 나타내줌
 단어들 간의 연관성이 너무 낮은 단어들은 잘라냄 (min_support=0.003)
 
-
-
+```
 from apyori import apriori
 
 results=list(apriori(word_pre,
                      min_support=0.003,
                      max_length=2))
-                     
+```
+
 연관성 분석 결과를 데이터프레임 형태로 만들어줌
 네트워크를 그릴 때 단어들이 너무 많으면 설정을 잘 하지 못하면 그림이 난잡해짐
 데이터를 살펴 보고 적정 단어 수를 결정함.
 support의 값을 변경하여 연관성이 낮은 단어부터 잘라냄
 
+```
 df=pd.DataFrame(results)
 df['length'] = df['items'].apply(lambda x:len(x))
 df=df[(df['length']==2) & (df['support'] >=0.0052 ) ].sort_values(by='support', ascending=False)
 
 df
-                     
+```                     
 # 네트워크 그리기
 
 네트워크를 그리기 위한 패키지 불러옴
